@@ -18,9 +18,9 @@ class CreateUserCest
     {
         $faker = Factory::create();
 
-        public static $username = $faker->name;
-        public static $email    = $faker->email;
-        public static $password = $faker->password;
+         $username = $faker->name;
+         $email    = $faker->email;
+         $password = $faker->password;
 
         $I->wantTo('Check that user creates successfully');
         $I->sendPOST(
