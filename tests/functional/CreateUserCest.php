@@ -100,7 +100,7 @@ class CreateUserCest
             '/user/create',
             [
 
-                'email'    => $this->getAlreadyExistedEmail,
+                'email'    => $this->getAlreadyExistedEmail(),
                 'password' => $password,
                 'username' => $username
             ]
@@ -123,7 +123,7 @@ class CreateUserCest
     protected function getAlreadyExistedEmail(FunctionalTester $I)
     {
         $I->sendGET('/user/get');
-        $existedEmail = $I->grabDataFromResponseByJsonPath('$..username');
+        $existedEmail = $I->grabDataFromResponseByJsonPath('$..email');
 
         return $existedEmail;
     }
