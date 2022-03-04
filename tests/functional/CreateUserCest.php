@@ -9,12 +9,6 @@ use \Codeception\Util\HttpCode;
  */
 class CreateUserCest
 {
-    $faker = Factory::create();
-
-    public static $username = $faker->name;
-    public static $email    = $faker->email;
-    public static $password = $faker->password;
-
     /**
      * Проверка успешной регистрации пользователя
      *
@@ -22,21 +16,27 @@ class CreateUserCest
      */
     public function checkUserCreate(FunctionalTester $I)
     {
+        $faker = Factory::create();
+
+        public static $username = $faker->name;
+        public static $email    = $faker->email;
+        public static $password = $faker->password;
+
         $I->wantTo('Check that user creates successfully');
         $I->sendPOST(
             '/user/create',
             [
-                'username' => self::$username,
-                'email'    => self::$email,
-                'password' => self::$password
+                'username' => $username,
+                'email'    => $email,
+                'password' => $password
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->canSeeResponseContainsJson([
             'success' => true,
             'details' => [
-                'email'    => self::$email,
-                'username' => self::$username
+                'email'    => $email,
+                'username' => $username
             ],
             "message" => "User Successully created"
         ]);
@@ -48,8 +48,8 @@ class CreateUserCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'id' => $id[0],
-            'username' => self::$username,
-            'email'    => self::$email
+            'username' => $username,
+            'email'    => $email
         ]);
     }
 
