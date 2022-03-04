@@ -110,7 +110,7 @@ class CreateUserCest
         $I->canSeeResponseContainsJson([
             'success'             => false,
             'message' => [
-                "This username is taken. Try another."
+                "Email already exists"
             ],
         ]);
     }
@@ -123,9 +123,8 @@ class CreateUserCest
     protected function getAlreadyExistedEmail(FunctionalTester $I)
     {
         $I->sendGET('/user/get');
+        
         $existedEmail = $I->grabDataFromResponseByJsonPath('$..email');
-        var_dump($existedEmail);
-        var_dump($existedEmail[0]);
 
         return $existedEmail[0];
     }
