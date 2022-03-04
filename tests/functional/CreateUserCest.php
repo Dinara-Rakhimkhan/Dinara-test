@@ -1,1 +1,107 @@
+<?php
 
+use Faker\Factory;
+use \Codeception\Util\HttpCode;
+
+
+/**
+ * Тестирование метода Сreate user
+ */
+class CreateUserCest
+{
+    $faker = Factory::create();
+
+    public static $username = $faker->name;
+    public static $email    = $faker->email;
+    public static $password = $faker->password;
+
+    /**
+     * Проверка успешной регистрации пользователя
+     *
+     * @param \FunctionalTester $I
+     */
+    public function checkUserCreate(FunctionalTester $I)
+    {
+        $I->wantTo('Check that user creates successfully');
+        $I->sendPOST(
+            '/user/create',
+            [
+                'username' => self::$username,
+                'email'    => self::$email,
+                'password' => self::$password
+            ]
+        );
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->canSeeResponseContainsJson([
+            'success' => true,
+            'details' => [
+                'email'    => self::$email,
+                'username' => self::$username
+            ],
+            "message" => "User Successully created"
+        ]);
+
+        $id = preg_replace("/[^0-9]/", '', $I->grabDataFromResponseByJsonPath('$..details.id'));
+
+        $I->sendGET('/user/get');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'id' => $id[0],
+            'username' => self::$username,
+            'email'    => self::$email
+        ]);
+    }
+
+    /**
+     * Проверка кода ошибки 400 при создании юзера без обязательного параметра - usermname
+     *
+     * @param \FunctionalTester $I
+     */
+    public function checkCreateWithoutRequiredFieldUsername(FunctionalTester $I)
+    {
+        $I->wantTo('Check error code 400 while create user without usermane');
+        $I->sendPOST(
+            '/user/create',
+            [
+                'email'    => self::$email,
+                'password' => self::$password
+            ]
+        );
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+        $I->seeResponseIsJson();
+        $I->canSeeResponseContainsJson([
+            'success'             => false,
+            'message' => [
+                "A username is required"
+            ],
+        ]);
+    }
+
+    /**
+     * Проверка кода ошибки 400 при создании юзера c уже существующим email
+     *
+     * @param \FunctionalTester $I
+     */
+    public function checkCreateWithAlreadyExistedValue(FunctionalTester $I)
+    {
+        $I->wantTo('Check error code 400 while create user without usermane');
+        $I->sendPOST(
+            '/user/create',
+            [
+
+                'email'    => self::$email,
+                'password' => self::$password,
+                'username' => self::$username
+            ]
+        );
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+        $I->seeResponseIsJson();
+        $I->canSeeResponseContainsJson([
+            'success'             => false,
+            'message' => [
+                "This username is taken. Try another."
+            ],
+        ]);
+    }
+}
