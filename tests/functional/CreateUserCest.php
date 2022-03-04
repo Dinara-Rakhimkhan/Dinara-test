@@ -9,11 +9,6 @@ use \Codeception\Util\HttpCode;
  */
 class CreateUserCest
 {
-    public static $faker = Factory::create();
-    public static $username = $faker->name;
-    public static $email    = $faker->email;
-    public static $password = $faker->password;
-    
     /**
      * Проверка успешной регистрации пользователя
      *
@@ -22,6 +17,12 @@ class CreateUserCest
     public function checkUserCreate(FunctionalTester $I)
     {
         $I->wantTo('Check that user creates successfully');
+       
+        $faker = Factory::create();
+        $username = $faker->name;
+        $email    = $faker->email;
+        $password = $faker->password;
+        
         $I->sendPOST(
             '/user/create',
             [
@@ -60,11 +61,16 @@ class CreateUserCest
     public function checkCreateWithoutRequiredFieldUsername(FunctionalTester $I)
     {
         $I->wantTo('Check error code 400 while create user without usermane');
+        
+        $faker = Factory::create();
+        $email    = $faker->email;
+        $password = $faker->password;
+        
         $I->sendPOST(
             '/user/create',
             [
-                'email'    => self::$email,
-                'password' => self::$password
+                'email'    => $email,
+                'password' => $password
             ]
         );
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
@@ -85,13 +91,18 @@ class CreateUserCest
     public function checkCreateWithAlreadyExistedValue(FunctionalTester $I)
     {
         $I->wantTo('Check error code 400 while create user without usermane');
+        
+        $faker = Factory::create();
+        $email    = $faker->email;
+        $password = $faker->password;
+        
         $I->sendPOST(
             '/user/create',
             [
 
-                'email'    => self::$email,
-                'password' => self::$password,
-                'username' => self::$username
+                'email'    => $this->getAlreadyExistedEmail,
+                'password' => $password,
+                'username' => $username
             ]
         );
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
@@ -102,5 +113,18 @@ class CreateUserCest
                 "This username is taken. Try another."
             ],
         ]);
+    }
+    
+    /**
+     *  Возвращает существующий email
+     *
+     * @param \FunctionalTester $I
+     */
+    protected function getAlreadyExistedEmail(FunctionalTester $I)
+    {
+        $I->sendGET('/user/get');
+        $existedEmail = $I->grabDataFromResponseByJsonPath('$..username');
+
+        return $existedEmail;
     }
 }
