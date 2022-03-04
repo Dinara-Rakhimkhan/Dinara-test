@@ -9,6 +9,11 @@ use \Codeception\Util\HttpCode;
  */
 class CreateUserCest
 {
+    public static $faker = Factory::create();
+    public static $username = $faker->name;
+    public static $email    = $faker->email;
+    public static $password = $faker->password;
+    
     /**
      * Проверка успешной регистрации пользователя
      *
@@ -16,12 +21,6 @@ class CreateUserCest
      */
     public function checkUserCreate(FunctionalTester $I)
     {
-        $faker = Factory::create();
-
-         $username = $faker->name;
-         $email    = $faker->email;
-         $password = $faker->password;
-
         $I->wantTo('Check that user creates successfully');
         $I->sendPOST(
             '/user/create',
