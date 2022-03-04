@@ -14,44 +14,44 @@ class CreateUserCest
      *
      * @param \FunctionalTester $I
      */
-//     public function checkUserCreate(FunctionalTester $I)
-//     {
-//         $I->wantTo('Check that user creates successfully');
+    public function checkUserCreate(FunctionalTester $I)
+    {
+        $I->wantTo('Check that user creates successfully');
        
-//         $faker = Factory::create();
-//         $username = $faker->name;
-//         $email    = $faker->email;
-//         $password = $faker->password;
+        $faker = Factory::create();
+        $username = $faker->name;
+        $email    = $faker->email;
+        $password = $faker->password;
         
-//         $I->sendPOST(
-//             '/user/create',
-//             [
-//                 'username' => $username,
-//                 'email'    => $email,
-//                 'password' => $password
-//             ]
-//         );
-//         $I->seeResponseCodeIs(HttpCode::OK);
-//         $I->canSeeResponseContainsJson([
-//             'success' => true,
-//             'details' => [
-//                 'email'    => $email,
-//                 'username' => $username
-//             ],
-//             "message" => "User Successully created"
-//         ]);
+        $I->sendPOST(
+            '/user/create',
+            [
+                'username' => $username,
+                'email'    => $email,
+                'password' => $password
+            ]
+        );
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->canSeeResponseContainsJson([
+            'success' => true,
+            'details' => [
+                'email'    => $email,
+                'username' => $username
+            ],
+            "message" => "User Successully created"
+        ]);
 
-//         $id = preg_replace("/[^0-9]/", '', $I->grabDataFromResponseByJsonPath('$..details.id'));
+        $id = preg_replace("/[^0-9]/", '', $I->grabDataFromResponseByJsonPath('$..details.id'));
 
-//         $I->sendGET('/user/get');
-//         $I->seeResponseCodeIs(HttpCode::OK);
-//         $I->seeResponseIsJson();
-//         $I->seeResponseContainsJson([
-//             'id' => $id[0],
-//             'username' => $username,
-//             'email'    => $email
-//         ]);
-//     }
+        $I->sendGET('/user/get');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'id' => $id[0],
+            'username' => $username,
+            'email'    => $email
+        ]);
+    }
 
     /**
      * Проверка кода ошибки 400 при создании юзера без обязательного параметра - usermname
@@ -88,9 +88,9 @@ class CreateUserCest
      *
      * @param \FunctionalTester $I
      */
-    public function checkCreateWithAlreadyExistedValue(FunctionalTester $I)
+    public function checkCreateWithAlreadyExistedEmail(FunctionalTester $I)
     {
-        $I->wantTo('Check error code 400 while create user without usermane');
+        $I->wantTo('Check error code 400 while create user with existed email');
         
         $faker    = Factory::create();
         $username = $faker->name;
