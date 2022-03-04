@@ -92,8 +92,8 @@ class CreateUserCest
     {
         $I->wantTo('Check error code 400 while create user without usermane');
         
-        $faker = Factory::create();
-        $email    = $faker->email;
+        $faker    = Factory::create();
+        $username = $faker->name;
         $password = $faker->password;
         
         $I->sendPOST(
