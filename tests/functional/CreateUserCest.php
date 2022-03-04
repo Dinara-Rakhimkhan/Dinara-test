@@ -127,6 +127,6 @@ class CreateUserCest
         var_dump($existedEmail);
         var_dump($existedEmail[0]);
 
-        return $existedEmail;
+        return $existedEmail[0];
     }
 }
