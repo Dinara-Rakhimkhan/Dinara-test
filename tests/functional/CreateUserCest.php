@@ -100,7 +100,7 @@ class CreateUserCest
             '/user/create',
             [
 
-                'email'    => $this->getAlreadyExistedEmail(),
+                'email'    => $this->getAlreadyExistedEmail($I),
                 'password' => $password,
                 'username' => $username
             ]
